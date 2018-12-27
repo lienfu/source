@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/style.css" />
+<script type="text/javascript" src="../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+
+$(document).ready(function(){
+	$.ajax({
+		type:"get",
+		url:projectName+"/menu/findByLevel",
+		dataType:"json",
+	 	contentType:"application/json",
+		success:function(data){
+	 	$('#up_menus').empty();
+			var html = '';
+			html += '<select class="select" id="up_menu" >'+'<option value ="0">根目录</option>';
+	//		html += '<option value ="0">根目录</option>';
+			for(var i=0;i<data.length;i++){
+				html += '<option value ="'+data[i].id+'">'+data[i].menu_name+'</option>';
+			}
+		html +='</select>';
+		$("#up_menus").append(html);
+		},
+		error:function(){
+			alert("服务器连接失败，请联系管理员");
+		}
+	});  
+	
+	
+})
+
+
+
+function addMenu(){
+	 var menu = {
+			menu_name:$("#menu_name").val(),
+			up_menu_id: $("#up_menu option:selected").val(),
+			path:$("#path").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/menu/addMenu",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(menu),
+	 	success:function(data){
+			window.parent.window.Toast(data);
+  			window.parent.window.move('index.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+}
+
+
+</script>
+</head>
+<body>
+<!-- <p>菜单名称1111：<input type="text" id="menu_name" /></p>
+<p>上级菜单：<span id="up_menus"></span></p>
+<p>路径：<input type="text" id="path" /></p>
+<p><input type="button" onclick="addMenu()" value="提交"/></p>
+ -->
+<div class="page-container">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 菜单名称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="menu_name">
+		</div>
+	</div>
+	
+	<br>
+
+		<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 菜单路由：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="path">
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+	<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 上级菜单：</label>
+	<div class="formControls col-xs-8 col-sm-9">
+		<span class="select-box" id="up_menus"></span>
+	</div>
+	
+	<br><br><br>
+	<div style="text-align:center">
+    <button onClick="addMenu();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+	</div>
+
+</div>
+
+
+<br>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.source.dao.MenuMapper">
+	<insert id="addMenu" useGeneratedKeys="true" parameterType="com.source.model.Menu" keyProperty="id">
+		insert into tb_menu(menu_name,level,up_menu_id,path) values(#{menu_name},#{level},#{up_menu_id},#{path})
+	</insert>
+	
+	<select id="findById" resultType="com.source.model.Menu" >
+		select * from tb_menu where id=#{id}
+	</select>
+	
+	<select id="pageMenu" resultType="Map">
+		select * from tb_menu limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_menu 
+	</select>
+	
+	<delete id="deleteById" >
+		delete from tb_menu where id=#{id}
+	</delete>
+	
+	<select id="findByLevel" resultType="com.source.model.Menu">
+		select * from tb_menu where level=1
+	</select>
+	
+	<update id="updateMenu" parameterType="com.source.model.Menu">
+		update tb_menu set menu_name=#{menu_name},level=#{level},up_menu_id=#{up_menu_id},path=#{path} where id=#{id}
+	</update>
+	
+	<!-- 
+		删除菜单前，先判断是否有菜单的up_menu_id为删除菜单的ID
+	 -->
+	<select id="findUpMenuId" resultType="int">
+		select count(*) from tb_menu where up_menu_id = #{up_menu_id}
+	</select>
+	
+	<select id="findAll" resultType="com.source.model.Menu">
+		select * from tb_menu
+	</select>
+	
+
+</mapper>

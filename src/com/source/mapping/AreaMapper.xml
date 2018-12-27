@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.dao.AreaMapper">
+	<insert id="addArea" useGeneratedKeys="true" parameterType="com.source.model.Area" keyProperty="id">
+		insert into tb_area(area_name,level,up_area_id,area_id) values(#{area_name},#{level},#{up_area_id},#{area_id})
+	</insert>
+
+	<select id="findById" resultType="com.source.model.Area" >
+		select * from tb_area where id=#{id}
+	</select>
+	
+	<select id="pageArea" resultType="com.source.model.Area">
+		select * from tb_area limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_area 
+	</select>
+	
+	<delete id="deleteById" >
+		delete from tb_area where id=#{id}
+	</delete>
+	
+	<select id="ifDeleteById" resultType="int">
+		select count(*) from tb_area where up_area_id=#{up_area_id}
+	</select>
+	
+	<update id="updateArea" parameterType="com.source.model.Area">
+		update tb_area set area_name=#{area_name},level=#{level},up_area_id=#{up_area_id} where id=#{id}
+	</update>
+	
+	<select id="findAll" resultType="com.source.model.Area">
+		select * from tb_area
+	</select>
+	
+	<select id="findLevelOne" resultType="com.source.model.Area">
+		select * from tb_area where level=0
+	</select>
+	
+	<select id="findUpAreaId" resultType="com.source.model.Area">
+		select * from tb_area where up_area_id=#{up_area_id}
+	</select>
+	
+	<select id="findAreaId" resultType="com.source.model.Area">
+		select * from tb_area where up_area_id=#{up_area_id} and level=1
+	</select>
+	
+	<select id="findAreaIds" resultType="com.source.model.Area">
+		select * from tb_area where up_area_id=#{up_area_id} and level=2
+	</select>
+	
+	<select id="findlevelArea" resultType="com.source.model.Area">
+		select * from tb_area where area_id=#{area_id} and level=#{level}
+	</select>
+	
+	<!-- 根据父ID和上级ID查询area -->
+	<select id="findByUpArea" resultType="com.source.model.Area">
+		select * from tb_area where up_area_id=#{up_area_id} and area_id=#{area_id}
+	</select>
+	
+	
+
+</mapper>

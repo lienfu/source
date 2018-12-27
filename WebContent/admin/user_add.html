@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/style.css" />
+<script type="text/javascript" src="../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+$(document).ready(function(){
+	$.ajax({
+		type:"get",
+		url:projectName+"/role/findAll",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	success:function(data){
+	 		$('#role').empty();
+			var code = '';
+			code += '<select id="role_id"  class="select" size="1">'
+			+'<option value ="0">请选择</option>';
+			for(var i=0;i<data.length;i++){
+				code += '<option value ="'+data[i].id+'">'+data[i].role_name+'</option>';
+			}
+			code += '</select><br/>';
+			$("#role").append(code);
+
+	 	},
+	 	error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	});
+	
+	
+	 $.ajax({
+		type:"get",
+		url:projectName+"/area/findLevelOne",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	success:function(data){
+	 		$('#area_levle_zero').empty();
+			var code = '';
+			code += '<select id="area_zero" class="select" size="1">'
+			+'<option value ="0">请选择</option>';
+			for(var i=0;i<data.length;i++){
+				code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+			}
+			code += '</select><br/>';
+			$("#area_levle_zero").append(code);
+
+	 	},
+	 	error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	}); 
+	 
+	 $("#area_levle_next").change(function(){
+		 var area_zero=$("#area_zero option:selected").val();
+		 var area_levle_next =$("#area_levle_next option:selected").val();
+		
+		 if(area_zero==0){
+			 alert("请先选择主区域");
+		 } else{
+				 $.ajax({
+						type:"get",
+						url:projectName+"/area/findlevelArea?area_id="+area_zero+"&level="+area_levle_next,
+						dataType:"json",
+					 	contentType:"application/json",
+					 	success:function(data){
+					 		$('#area').empty();
+							var code = '';
+							code += '<select id="area_id"  class="select" size="1">'
+							+'<option value ="0">请选择</option>';
+							if(null == data || "" == data){
+								 alert("无数据，请重新选择区域级别"); 
+							 }else{
+								for(var i=0;i<data.length;i++){
+									code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+								}
+							 }
+							code += '</select><br/>';
+							$("#area").append(code);
+
+					 	},
+					 	error:function(){
+							alert("服务器连接失败！请刷新页面");
+						} 
+					});   
+			 
+		 }
+	 });
+	
+});
+
+function user_add(){
+	
+	 if(typeof($("#area_id option:selected").val())=="undefined" || $("#area_id option:selected").val()==0){
+		 alert("请选择子区域");
+	 }else{
+		 var user= {
+					account:$("#account").val(),
+					nick_name:$("#nick_name").val(),
+					password:$("#password").val(),
+					role_id:$("#role_id option:selected").val(),
+					area_id:$("#area_id option:selected").val(),
+					status:$("input[name='sex']:checked").val()
+			} 
+			 
+			 $.ajax({
+					type:"post",
+					url:projectName+"/user/addUser",
+					dataType:"json",
+				 	contentType:"application/json",
+				 	data:JSON.stringify(user),
+				 	success:function(data){
+			//	 		alert(data);
+				 		window.parent.window.Toast(data);
+			  			window.parent.window.move('user_list.html');
+			        	var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+
+				 	},
+				 	error:function(data){
+				 		alert("服务器连接失败，请联系管理员");
+				 	} 
+				});    
+	 }
+}
+
+
+
+</script>
+</head>
+<body>
+<div class="page-container">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 用户账号：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="account">
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 用户昵称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="nick_name">
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 用户密码：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="password">
+		</div>
+	</div>		
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 选择角色：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="role" ></span>
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 选择主区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="area_levle_zero" ></span>
+		</div>
+	</div>
+	
+		<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 选择子区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<select id="area_levle_next" class="select-box select" size="1">
+				<option >请选择</option>
+				<option value="1">一级区域</option>
+				<option value="2">二级区域</option>
+				<option value="3">三级区域</option>
+			</select>
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 用户区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="area" ></span>
+		</div>
+	</div>
+	
+	<br>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>状态：</label>
+		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+			<div class="radio-box">
+				<input name="sex" type="radio"  value="1" checked>
+				<label for="sex-1">启用</label>
+			</div>
+			<div class="radio-box">
+				<input type="radio"  name="sex"  value="0">
+				<label for="sex-2">暂停</label>
+			</div>
+		</div>
+	</div>
+	<br><br>
+	<div style="text-align:center">
+   		<button onClick="user_add()();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+	</div>
+
+</div>
+
+
+
+<!-- <p>用户账号：<input type="text" id="account" /></p>
+<p>用户昵称：<input type="text" id="nick_name" /></p>
+<p>用户密码：<input type="password" id="password" /></p>
+<div>选择角色：<span id="role"></span></div>
+<div>选择主区域：<span id="area_levle_zero"></span></div>
+<div>选择子区域级别：
+<select id="area_levle_next">
+<option >请选择</option>
+<option value="1">一级区域</option>
+<option value="2">二级区域</option>
+<option value="3">三级区域</option>
+</select>
+</div>
+<div>请选择用户区域：<span id="area"></span></div>
+<div>
+<input type="radio" name="status" value="0" />启用
+ <input type="radio" name="status" value="1" />暂停
+
+</div>
+
+<p><input type="button" onclick="user_add()" value="添加"/></p>
+</body> -->
+</html>

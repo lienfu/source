@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.source.dao.OperationMapper">
+
+	<select id="findAll" resultType="com.source.model.Operation">
+		select * from tb_operation
+	</select>
+	
+	<select id="findById" resultType="com.source.model.Operation">
+		select * from tb_operation where id= #{id}
+	</select>
+	
+	<delete id="deleteById" >
+		delete from tb_operation where id=#{id}
+	</delete>
+	
+	<insert id="addOperation" useGeneratedKeys="true" parameterType="com.source.model.Operation" keyProperty="id">
+		insert into tb_operation(operation_name,path) values(#{operation_name},#{path})
+	</insert>
+	
+	<update id="updateOperation" parameterType="com.source.model.Operation" >
+		update tb_operation set operation_name=#{operation_name},path=#{path} where id=#{id}
+	</update>
+	
+	<select id="pageOperation" resultType="com.source.model.Operation">
+		select * from tb_operation limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_operation 
+	</select>
+</mapper>

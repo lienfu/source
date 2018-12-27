@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.source.dao.RoleMapper">
+	
+	
+	<insert id="addRole" useGeneratedKeys="true" parameterType="com.source.model.Role" keyProperty="id">
+		insert into tb_role(role_name,menus,operations,status) values(#{role_name},#{menus},#{operations},#{status})
+		<!-- <foreach collection="menus" item="menu" index="index"  open="'"  separator="," close="'">
+            ${menu.id}
+        </foreach> -->
+	</insert>
+	
+	<select id="pageRole" resultType="com.source.model.Role">
+		select * from tb_role limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_role 
+	</select>
+	
+	<delete id="deleteById" >
+		delete from tb_role where id=#{id}
+	</delete>
+	
+	<select id="findById" resultType="com.source.model.Role">
+		select * from tb_role where id=#{id}
+	</select>
+	
+	<update id="updateRole" parameterType="com.source.model.Role">
+		update tb_role set role_name=#{role_name},menus=#{menus},operations=#{operations},status=#{status} where id=#{id}
+	</update>
+	
+	<select id="findAll" resultType="com.source.model.Role">
+		select * from tb_role
+	</select>
+		
+        
+
+</mapper>

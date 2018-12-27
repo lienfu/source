@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../plugin/static/h-ui.admin/css/style.css" />
+<script type="text/javascript" src="../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../plugin/js/jquery.params.js"></script>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+var id = $.query.get("id");
+var menus=new Array();
+var operations = new Array();
+
+function contains(arr, obj) {
+	var arrs = arr.split(',')
+    var i = arrs.length;
+    while (i--) {
+        if (arrs[i] == obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+$(document).ready(function(){
+		$.ajax({
+			type:"get",
+			url:projectName+"/role/findById?id="+id,
+			dataType:"json",
+		 	contentType:"application/json",
+			success:function(data){
+				$("#role_name").val(data[0].role_name);
+				menus = data[0].menus;
+				operations = data[0].operations;
+				$("input[name='status'][value='"+data[0].status+"']").attr("checked",true)
+				$('#menu').empty();
+				var code_menu = '';
+				if(data[1].length==0){
+					code_menu='请先添加菜单';
+				}else{
+					for(var i=0;i<data[1].length;i++){	
+						if(data[1][i].level == 1){
+							var code_menu ='';
+								code_menu+='<dl class="permission-list"><dt><label class="">一级菜单</label></dt><dd><dl class="cl permission-list2" ><dd><label class="">'
+							if(contains(menus,data[1][i].id)){
+							   code_menu+= '<input type="checkbox" checked name="menu" value="'+data[1][i].id+'"/>'+data[1][i].menu_name;
+							}else{
+								code_menu+= '<input type="checkbox" name="menu" value="'+data[1][i].id+'"/>'+data[1][i].menu_name;	
+							}
+							code_menu+='</dd></dl></dd></dl>';
+							$("#menu").append(code_menu);
+						}
+						if(data[1][i].level == 1){
+							var code_menu = '';
+							code_menu+='<dl class="permission-list"><dt><label class="">二级菜单</label></dt><dd><dl class="cl permission-list2" ><dd>';
+							
+							for(var j=0;j<data[1].length;j++){
+								if(data[1][j].level == 2 && data[1][j].up_menu_id ==data[1][i].id){
+									if(contains(menus,data[1][j].id)){
+										code_menu+= '<input type="checkbox" checked name="menu" value="'+data[1][j].id+'"/>'+data[1][j].menu_name+'&nbsp;';
+									}else{
+									    code_menu+= '<input type="checkbox" name="menu" value="'+data[1][j].id+'"/>'+data[1][j].menu_name+'&nbsp;';	
+									}
+								}
+								
+							}
+							code_menu+='</dl></dd></dl>';
+							$("#menu").append(code_menu);
+						
+						}
+					}  
+				}
+		//		$("#menu").append(code_menu);
+				
+				$('#operation').empty();
+				var code_operation = '';
+				if(data[2].length==0){
+					code_operation='请先添加权限';
+				}else{
+					code_operation+='<dl class="permission-list"><dt><label class="">关联权限</label></dt><dd><dl class="cl permission-list2" ><dd><label class="">';
+					for(var i=0;i<data[2].length;i++){
+						if(contains(operations,data[2][i].id)){
+							code_operation+= '<input type="checkbox" checked name="operation" value="'+data[2][i].id+'"/>'+data[2][i].operation_name+'&nbsp;';
+						}else{
+							code_operation+= '<input type="checkbox" name="operation" value="'+data[2][i].id+'"/>'+data[2][i].operation_name+'&nbsp;';
+						}
+					}
+				}
+				$("#operation").append(code_operation);
+			},
+			error:function(){
+				alert("服务器连接失败，请联系管理员");
+			}
+		});  
+});
+
+function updateRole(){
+	var menu = [];
+	$("input:checkbox[name='menu']:checked").each(function(){ 
+		menu.push($(this).val());
+	});
+	if(menu.length==0){
+		menu.push(0);
+	}
+	var operation = [];
+	$("input:checkbox[name='operation']:checked").each(function(){ 
+		operation.push($(this).val());
+	});
+	if(operation.length==0){
+		operation.push(0);
+	}
+	var status = $("input[name='status']:checked").val();
+	
+	
+	$.ajax({
+		type:"post",
+		url:projectName+"/role/updateRole",
+		dataType:"json",
+	 	contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		data:{
+			id:id,
+			role_name:$("#role_name").val(),
+			status:status,
+			menus:menu,
+			operations:operation
+		},  
+		success:function(data){
+			window.parent.window.Toast(data);
+  			window.parent.window.move('role_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+		},
+		 error:function(){
+			alert("服务器连接失败，请联系管理员");
+		} 
+	});  
+}
+
+
+
+</script>
+</head>
+<body>
+<div class="page-container">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 角色名称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="role_name" datatype="*4-16" nullmsg="用户账户不能为空">
+		</div>
+	</div>
+	
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>状态：</label>
+		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+			<div class="radio-box">
+				<input name="status" type="radio" id="sex-1" value="0" >
+				<label for="sex-1" >暂停</label>
+			</div>
+			<div class="radio-box">
+				<input name="status" type="radio" id="sex-2" value="1" checked="checked"/>
+				<label for="sex-2">启用</label>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">关联菜单:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+				<span  id="menu"></span>
+		</div>
+	</div>
+	
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">关联权限:</label>
+	 	<div class="formControls col-xs-8 col-sm-9">
+					<span id="operation"></span>
+		</div> 
+	</div>
+	<br>
+		
+	<div style="text-align:center">
+   		<button onClick="updateRole();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+	</div>
+		
+	
+</div>
+</body>
+</html>

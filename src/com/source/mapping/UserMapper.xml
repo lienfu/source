@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.dao.UserMapper">
+
+	<insert id="addUser" useGeneratedKeys="true" parameterType="com.source.model.User" keyProperty="id">
+		insert into tb_user(account,nick_name,password,role_id,create_time,update_time,area_id,status) values(#{account},#{nick_name},#{password},#{role_id},#{create_time},#{update_time},#{area_id},#{status})
+	</insert>
+	
+	<select id="findById" resultType="com.source.model.User"> 
+	 	select * from tb_user where id=#{id}
+	</select>
+
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_user 
+	</select>
+	
+	<select id="pageUser" resultType="com.source.model.User">
+		select * from tb_user limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<delete id="deleteById" >
+		delete from tb_user where id=#{id}
+	</delete>
+	
+	<update id="updateUser" parameterType="com.source.model.User">
+		update tb_user set nick_name=#{nick_name},role_id=#{role_id},update_time=#{update_time},status=#{status} where id=#{id}
+	</update>
+	
+	<update id="updateUserPw">
+		update tb_user set password=#{password},update_time=#{update_time} where id=#{id}
+	</update>
+	
+	<select id="userLogin" resultType="com.source.model.User">
+		select * from tb_user where account=#{account} and password=#{password}
+	</select>
+	
+	<select id="IfUserLogin" resultType="com.source.model.User">
+		select * from tb_user where id=#{id} and account=#{account}
+	</select>
+	
+	<select id="FindByAreaId" resultType="com.source.model.User">
+		select * from tb_user where area_id=#{area_id} 
+	</select>
+	
+	<select id="FindByAccout" resultType="com.source.model.User">
+		select * from tb_user where account=#{account} 
+	</select>
+	
+	
+	
+
+</mapper>

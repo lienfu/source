@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.dao.LogMapper">
+	<insert id="addLog" useGeneratedKeys="true" parameterType="com.source.model.Log" keyProperty="id">
+		insert into tb_log (user_account, operate_time,content) values (#{user_account},#{operate_time},#{content})
+	</insert>
+
+	<select id="pageLog" resultType="com.source.model.Log">
+		select * from tb_log order by id desc limit #{pageIndex},#{pageNumber}
+	</select>
+	
+	<select id="pageCount" resultType="int">
+		select COUNT(*) from tb_log 
+	</select>
+
+
+</mapper>
