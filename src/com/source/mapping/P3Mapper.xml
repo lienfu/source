@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.dao.P3Mapper">
+
+	<insert id="add">
+		insert into tb_p3(address,p1_id) values(#{address},#{p1.id})
+	</insert>
+
+	<update id="update">
+		update tb_p3 set address=#{address},p1_id=#{p1.id} where id=#{id}
+	</update>
+	
+	 <select id="findById" resultMap="findByIds">
+	     select * from tb_p3 where id=#{id}
+	 </select>
+	 
+	 <resultMap type="com.source.model.P3" id="findByIds">
+	 	 <id column="id" jdbcType="INTEGER" property="id" />
+		 <result column="address" jdbcType="VARCHAR" property="address" />
+	     <association property="p1_id" column="p1_id" select="getP1"/>
+	 </resultMap>
+		
+	<select id="getP1" parameterType="int" resultType="com.source.model.P1">
+		SELECT * FROM tb_p1 WHERE id=#{id}
+	</select>
+	
+	<select id="findAll" resultMap="findAlls">
+		 select * from tb_p3 
+	</select>
+	
+	 <resultMap type="com.source.model.P3" id="findAlls">
+	 	 <id column="id" jdbcType="INTEGER" property="id" />
+		 <result column="address" jdbcType="VARCHAR" property="address" />
+	     <association property="p1_id" column="p1_id" select="getP1s"/>
+	 </resultMap>
+		
+	<select id="getP1s" parameterType="int" resultType="com.source.model.P1">
+		SELECT * FROM tb_p1 WHERE id=#{id}
+	</select>
+	
+</mapper>
