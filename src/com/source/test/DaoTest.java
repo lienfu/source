@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.source.model.P1;
 import com.source.model.P2;
@@ -35,7 +37,7 @@ public class DaoTest {
     private P2Service p2Service;
     
     @Resource
-    private P3Service P3Service;
+    private P3Service p3Service;
 	
     @Test
 	public void findUser() throws Exception {
@@ -83,7 +85,7 @@ public class DaoTest {
     public void add3() {
     	P1 p1 = new P1();
     	p1.setId(2);
-    	int result =P3Service.add("陈仓区", p1);
+    	int result =p3Service.add("陈仓区", p1);
     	System.out.println(result);
     }
     
@@ -92,24 +94,30 @@ public class DaoTest {
     public void updateP3() {
     	P1 p1 = new P1();
     	p1.setId(2);
-    	int result = P3Service.update("宝鸡虢镇", p1, 1);
+    	int result = p3Service.update("宝鸡虢镇", p1, 1);
     	System.out.println(result);
     }
     
     //根据嵌套的对象获取ID
     @Test
     public void findByIdP3() {
-    	P3 p3 = P3Service.findById(1);
+    	P3 p3 = p3Service.findById(1);
     	P1 p1 = p3.getP1_id();
     	System.out.println(p1.getName());
     }
     
     @Test
     public void findAllP3() {
-    	List<P3> listP3 = P3Service.findAll();
+    	List<P3> listP3 = p3Service.findAll();
     	for (P3 p3 : listP3) {
 			System.out.println(p3.getP1_id().getName());
 		}
+    }
+    
+    //测试事务
+    @Test
+   public void tans() {
+    	p3Service.trans();
     }
     
 }
