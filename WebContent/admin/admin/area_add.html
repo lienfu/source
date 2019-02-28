@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>区域添加</title>
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/css/style.css" />
+<script type="text/javascript" src="../../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+
+$(document).ready(function(){
+	$.ajax({
+		type:"get",
+		url:projectName+"/area/findLevelOne",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	success:function(data){
+	 		$('#up_area').empty();
+			var code = '';
+			code += '<select id="up_areas" class="select" name="up_area_id" size="1">';
+			for(var i=0;i<data.length;i++){
+				code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+			}
+			code += '</select><br/>';
+			$("#up_area").append(code);
+	 	},
+	 	error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	});
+//添加二级区域获取根区域	
+	$.ajax({
+		type:"get",
+		url:projectName+"/area/findLevelOne",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	success:function(data){
+	 		$('#up_area_first').empty();
+			var code = '';
+			code += '<select id="up_areas_first"  size="1"><option >--请选择--</option>';
+			for(var i=0;i<data.length;i++){
+				code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+			}
+			code += '</select><br/>';
+			$("#up_area_first").append(code);
+	 	},
+	 	error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	});
+	
+	
+	
+//添加二级区域，获取一级区域	
+	 $("#up_area_first").change(function(){
+		    var opt=$("#up_areas_first option:selected").val();
+		    $.ajax({
+				type:"get",
+				url:projectName+"/area/findAreaId?up_area_id="+opt,
+				dataType:"json",
+			 	contentType:"application/json",
+			 	success:function(data){
+			 		$('#first_area').empty();
+					var code = '';
+					if(null == data || "" == data){
+						code += '<select><option >--无数据--</option>';
+					}else{
+						code += '<select id="first_area" size="1">';
+						for(var i=0;i<data.length;i++){
+							code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+						}
+					}
+					
+					code += '</select><br/>';
+					
+					$("#first_area").append(code);
+					
+				
+			 	},
+			 	error:function(){
+					alert("服务器连接失败！请刷新页面");
+				} 
+			});
+		    
+		 });
+
+//添加三级区域 获取根区域	
+	 $.ajax({
+			type:"get",
+			url:projectName+"/area/findLevelOne",
+			dataType:"json",
+		 	contentType:"application/json",
+		 	success:function(data){
+		 		$('#up_area_second').empty();
+				var code = '';
+				code += '<select id="up_areas_second"  size="1"><option >--请选择--</option>';
+				for(var i=0;i<data.length;i++){
+					code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+				}
+				code += '</select><br/>';
+				$("#up_area_second").append(code);
+		 	},
+		 	error:function(){
+				alert("服务器连接失败！请刷新页面");
+			} 
+		});
+			 
+	
+//添加三级区域 获取第一级区域	
+	 $("#up_area_second").change(function(){
+		    var opt=$("#up_areas_second option:selected").val();
+	//	    alert(opt);
+		    $.ajax({
+				type:"get",
+				url:projectName+"/area/findAreaId?up_area_id="+opt,
+				dataType:"json",
+			 	contentType:"application/json",
+			 	success:function(data){
+		//	 		alert(data[0].area_name);
+			 		$('#firsts_area').empty();
+					var code = '';
+					code += '<select id="third_first_area" size="1"><option >--请选择--</option>';
+					for(var i=0;i<data.length;i++){
+						code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+					}
+					code += '</select><br/>';
+					
+					$("#firsts_area").append(code);
+			 	},
+			 	error:function(){
+					alert("服务器连接失败！请刷新页面");
+				} 
+			});
+		    
+		 });
+//添加三级区域获取第二级区域	
+	 $("#firsts_area").change(function(){
+		    var opt=$("#third_first_area option:selected").val();
+	//	    alert(opt);
+		    $.ajax({
+				type:"get",
+				url:projectName+"/area/findAreaIds?up_area_id="+opt,
+				dataType:"json",
+			 	contentType:"application/json",
+			 	success:function(data){
+			 		$('#area_name_seconds').empty();
+					var code = '';
+			 		 
+			 		if(null == data || "" == data){
+			 	//		 alert("空");
+			 			code += '<select><option >--无数据--</option>'; 
+			 		 }else{
+						code += '<select id="third_area" size="1">';
+						for(var i=0;i<data.length;i++){
+							code += '<option value ="'+data[i].id+'">'+data[i].area_name+'</option>';
+						}
+			 			 
+			 		 }
+					
+					code += '</select><br/>';
+					$("#area_name_seconds").append(code);
+			 	},
+			 	error:function(){
+					alert("服务器连接失败！请刷新页面");
+				} 
+			});
+		    
+		 });
+	
+});
+
+
+//添加根区域
+function addArea(){
+	 var area = {
+			area_name:$("#area_name").val(),
+			area_id: 0,
+			up_area_id:0
+			//area_id: $("#up_area option:selected").val(),
+			//up_area_id:$("input[name=area]:checked").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/area/addArea",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(area),
+	 	success:function(data){
+	 		window.parent.window.Toast(data);
+  			window.parent.window.move('area_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+}
+//添加一级区域
+function addAreaFirst(){
+	 var area = {
+			area_name:$("#area_name_first").val(),
+			area_id: $("#up_areas option:selected").val(),
+			up_area_id:$("#up_areas option:selected").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/area/addArea",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(area),
+	 	success:function(data){
+	 		window.parent.window.Toast(data);
+  			window.parent.window.move('area_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);	 		
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+}	
+//添加二级区域
+function addAreaSecond(){
+	 var area = {
+			area_name:$("#area_name_second").val(),
+			area_id: $("#up_areas_first option:selected").val(),
+			up_area_id:$("#first_area option:selected").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/area/addArea",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(area),
+	 	success:function(data){
+	 		window.parent.window.Toast(data);
+  			window.parent.window.move('area_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);	
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+}
+
+//添加三级区域
+function addAreaThird(){
+	 var area = {
+			area_name:$("#area_name_third").val(),
+			up_area_id: $("#third_area option:selected").val(),
+			area_id:$("#up_areas_second option:selected").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/area/addArea",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(area),
+	 	success:function(data){
+	 		window.parent.window.Toast(data);
+  			window.parent.window.move('area_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);	
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+} 
+
+</script>
+</head>
+<body>
+<!-- <p>根域名称：<input type="text" id="area_name" /></p>
+<p><input type="button" onclick="addArea()" value="添加根区域"/></p> -->
+
+<div class="page-container">
+<!-- 根区域 -->
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 根区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="area_name">
+		</div>
+		<br><br>
+		<div style="text-align:center">
+    		<button onClick="addArea();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存根区域</button>
+		</div>
+	</div>
+	<br>
+<!-- 一级区域 -->
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 根区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="up_area"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 一级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="area_name_first">
+		</div>
+		<br><br>
+		<div style="text-align:center">
+    		<button onClick="addAreaFirst();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存一级区域</button>
+		</div>
+	</div>
+	<br>	
+<!-- 二级区域 -->
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 根区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="up_area_first"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 一级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="first_area"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 二级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="area_name_second">
+		</div>
+		<br><br>
+		<div style="text-align:center">
+    		<button onClick="addAreaSecond();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存二级区域</button>
+		</div>
+	</div>	
+	<br>
+<!-- 三级区域 -->
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 根区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="up_area_second"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 一级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="firsts_area"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">&nbsp;</span> 二级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" id="area_name_seconds"></span>
+		</div>
+		<br><br>
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 三级区域：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="area_name_third">
+		</div>
+		<br><br>
+		<div style="text-align:center">
+    		<button onClick="addAreaThird();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存三级区域</button>
+		</div>
+	</div>	
+	<br>
+</div>
+
+
+
+<!-- <p>根区域:<span id="up_area"></span></p>
+<p>一级区域名称：<input type="text" id="area_name_first" /></p>
+<p><input type="button" onclick="addAreaFirst()" value="添加一级区域"/></p>
+
+
+<p>根区域:<span id="up_area_first"></span></p>
+<p>一级区域：<span id="first_area"></span></p>
+<p>二级区域名称：<input type="text" id="area_name_second" /></p>
+<p><input type="button" onclick="addAreaSecond()" value="添加二级区域"/></p>
+
+
+<p>根区域:<span id="up_area_second"></span></p>
+<p>一级区域：<span id="firsts_area"></span></p>
+<p>二级区域名称：<span id="area_name_seconds"></span></p>
+<p>三级区域名称：<input type="text" id="area_name_third" /></p>
+<p><input type="button" onclick="addAreaThird()" value="添加三级区域"/></p>
+ -->
+
+
+
+</body>
+
+</html>

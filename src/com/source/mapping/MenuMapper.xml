@@ -11,7 +11,7 @@
 	</select>
 	
 	<select id="pageMenu" resultType="Map">
-		select * from tb_menu limit #{pageIndex},#{pageNumber}
+		select * from tb_menu order by id desc limit #{pageIndex},#{pageNumber} 
 	</select>
 	
 	<select id="pageCount" resultType="int">
@@ -38,8 +38,10 @@
 	</select>
 	
 	<select id="findAll" resultType="com.source.model.Menu">
-		select * from tb_menu
+		select * from tb_menu order by id desc
 	</select>
+	
+	
 	
 
 </mapper>

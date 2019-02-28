@@ -57,13 +57,31 @@
     <description>防止spring内存溢出监听器</description>
     <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
   </listener>
-  
+  <!-- 判断用户是否登陆 -->
   <filter>
     <filter-name>LoginFilter</filter-name>
     <filter-class>com.source.filter.LoginFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>LoginFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  <!-- 判断用户是否有权限操作 -->
+   <filter>
+    <filter-name>OperationFilter</filter-name>
+    <filter-class>com.source.filter.OperationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>OperationFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+    <!-- 判断登陆的用户是否关联角色 -->  
+   <filter>
+    <filter-name>RoleFilter</filter-name>
+    <filter-class>com.source.filter.RoleFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>RoleFilter</filter-name>
     <url-pattern>/admin/*</url-pattern>
   </filter-mapping>
   

@@ -6,8 +6,4 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<settings>
 		<setting name="logImpl" value="LOG4J"/>
 	</settings>
-    <!-- 别名 -->
-<!--     <typeAliases>
-        <package name="com.source.model"/>
-    </typeAliases> -->
 </configuration>

@@ -8,16 +8,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import com.source.model.P1;
-import com.source.model.P2;
-import com.source.model.P3;
 import com.source.model.User;
-import com.source.services.P2Service;
-import com.source.services.P3Service;
 import com.source.services.UserServicesImpl;
+import com.source.test_model.P1;
+import com.source.test_model.P2;
+import com.source.test_model.P3;
+import com.source.test_services.P2Service;
+import com.source.test_services.P3Service;
 
 /**
  * 单元测试

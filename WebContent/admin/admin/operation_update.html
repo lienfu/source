@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>权限更新</title>
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../../plugin/static/h-ui.admin/css/style.css" />
+<script type="text/javascript" src="../../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../plugin/js/jquery.params.js"></script>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+var id = $.query.get("id");
+$(document).ready(function(){
+	$.ajax({
+		type:"get",
+		url:projectName+"/operation/findById?id="+id,
+		dataType:"json",
+	 	contentType:"application/json",
+		success:function(data){
+			$("#operation_name").val(data.operation_name),
+			$("#path").val(data.path)
+		},
+		error:function(){
+			alert("服务器连接失败，请联系管理员");
+		}
+	});  
+});
+
+function updateOperation(){
+	 var operation = {
+			id:id,
+			operation_name:$("#operation_name").val(),
+			path:$("#path").val()
+	}
+
+	$.ajax({
+		type:"post",
+		url:projectName+"/operation/updateOperation",
+		dataType:"json",
+	 	contentType:"application/json",
+	 	data:JSON.stringify(operation),
+	 	success:function(data){
+			window.parent.window.Toast(data);
+  			window.parent.window.move('operation_list.html');
+        	var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+	 	},
+	 	error:function(data){
+	 		alert("服务器连接失败，请联系管理员");
+	 	} 
+	});   
+}
+</script>
+</head>
+<body>
+<!-- <p>权限名称：<input type="text" id="operation_name" /></p>
+<p>路径：<input type="text" id="path" /></p>
+<p><input type="button" onclick="updateOperation()" value="提交"/></p> -->
+
+<div class="page-container">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 权限名称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="operation_name">
+		</div>
+	</div>
+	
+	<br>
+	
+		<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"> <span class="c-red">*</span> 路径：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="path">
+		</div>
+	</div>
+	
+	<br><br><br>
+	<div style="text-align:center">
+    <button onClick="updateOperation();" class="btn btn-primary radius"  ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+	</div>
+
+
+</div>
+</body>
+</html>

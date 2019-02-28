@@ -15,7 +15,7 @@
 	</select>
 	
 	<select id="pageUser" resultType="com.source.model.User">
-		select * from tb_user limit #{pageIndex},#{pageNumber}
+		select * from tb_user order by id desc limit #{pageIndex},#{pageNumber}
 	</select>
 	
 	<delete id="deleteById" >

@@ -12,7 +12,7 @@
 	</insert>
 	
 	<select id="pageRole" resultType="com.source.model.Role">
-		select * from tb_role limit #{pageIndex},#{pageNumber}
+		select * from tb_role order by id desc limit #{pageIndex},#{pageNumber}
 	</select>
 	
 	<select id="pageCount" resultType="int">

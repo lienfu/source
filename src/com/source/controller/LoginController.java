@@ -163,6 +163,7 @@ public class LoginController {
 			response.addCookie(cookies); 
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			Cookie cookie = new Cookie("msg", URLEncoder.encode("账号或密码错误", "UTF-8"));
 			cookie.setPath("/");
 			cookie.setMaxAge(3); 
@@ -170,7 +171,7 @@ public class LoginController {
 			response.sendRedirect(request.getContextPath()+"/login.html");
 			return;
 		}
-		response.sendRedirect(request.getContextPath()+"/admin/index.html");
+		response.sendRedirect(request.getContextPath()+"/admin/admin/index.html");
 		return;
 	}
 	

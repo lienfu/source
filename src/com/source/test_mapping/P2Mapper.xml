@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.test_dao.P2Mapper">
+
+	<insert id="addP2">
+		insert into test_p2(name,tel) values(#{p1.name},#{tel})
+	</insert>
+	
+	<update id="updateP2">
+		update test_p2 set name=#{p1.name},tel=#{tel} where id=#{id}
+	</update>
+	
+	<select id="findById" resultMap="findByIdP2">
+		select * from test_p2 where id=#{id}
+	</select>
+	
+	<resultMap type="com.source.test_model.P2" id="findByIdP2">
+		<!-- 注意  jdbcType 代表数据库的字段类型，必须大写-->
+		 <id column="id" jdbcType="INTEGER" property="id" />
+		 <result column="tel" jdbcType="VARCHAR" property="tel" />
+		 <association property="p1" javaType="com.source.test_model.P1">
+    			<result  column="name" jdbcType="VARCHAR" property="name"/>
+  		</association>
+	</resultMap>
+	
+	<select id="findAll" resultMap="findAlls" >
+		select * from test_p2 
+	</select>
+	
+	<resultMap type="com.source.test_model.P2" id="findAlls">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="tel" jdbcType="VARCHAR" property="tel" />
+		<association property="p1" javaType="com.source.test_model.P1">
+    			<result  column="name" jdbcType="VARCHAR" property="name"/>
+  		</association>
+	</resultMap>
+</mapper>

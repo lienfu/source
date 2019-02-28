@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户列表</title>
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+
+function page(pageNumber){	
+	$.ajax({
+		type:"get",
+		url:projectName+"/user/pageUser?pageIndex="+pageNumber,
+		dataType:"json",
+	 	contentType:"application/json",
+	 	success:function(data){
+	 		$('#pageCount').empty(); 
+	 		var code ='';
+	 		code += ('<span class="r">共有数据：<strong>'+data.count+'</strong> 条</span>');
+	 		$('#pageCount').append(code); 
+	 		$('#userInfo').empty();
+			var html = '';
+			html +='<table class="table table-border table-bordered table-bg">';
+			html +='<tr class="text-c"><th>编号</th><th>账户</th><th>昵称</th><th>角色</th><th>区域</th><th>创建时间</th><th>修改时间</th><th>状态</th><th colspan="2">操作</th></tr>';
+			for(var t=0;t<data.pageData.length;t++){
+				var itemallUser = data.pageData[t];
+				html +='<tr class="text-c"><td>'+itemallUser.id+'</td><td>'+itemallUser.account+'</td><td>'+itemallUser.nick_name+'</td><td>'+itemallUser.role_id+'</td><td>'+itemallUser.area_id+'</td><td>'+itemallUser.create_time+'</td><td>'+itemallUser.update_time+'</td><td>'+itemallUser.status+'</td>';
+				html += '<td><a href="javascript:void(0)" onclick="findById('+itemallUser.id+')"><i class="Hui-iconfont" title="修改">&#xe6df;</i></a>&nbsp;&nbsp;&nbsp;';
+				html += '<a href="javascript:void(0)" onclick="deleteById('+itemallUser.id+')"><i class="Hui-iconfont" title="删除">&#xe6e2;</i></a></td></tr>';
+			}
+			html += '<tr><td colspan="9">';
+			html += '<p style="text-align: center;">'; 
+			html += '第'+data.pageIndex+'页  '+'共'+data.pageCount+'页';
+		 	if(data.pageIndex>=2){
+		 		html +='<a href='+ "javascript:void(0)"+'>'+'<span onclick="page(1)">首页</span></a>';
+		 	}
+			
+			if(data.pageIndex<data.pageCount){
+				html +='<a href='+ "javascript:void(0)"+'>'+'<span onclick="page('+(data.pageIndex+1)+')">下一页</span></a>';
+			}
+			
+			if(data.pageCount==1){
+				html += '<a href ="javascript:void(0)"><span onclick="page('+1+')">['+1+']</span></a>';
+			}else if(data.pageCount>1 &&data.pageCount<=5){
+				for(pageNumber=1;pageNumber<=data.pageCount;pageNumber++){
+					html += '<a href ="javascript:void(0)"><span onclick="page('+pageNumber+')">['+pageNumber+']</span></a>';
+				}
+			}else if(data.pageCount>5){
+				for(pageNumber=1;pageNumber<=5;pageNumber++){
+					html += '<a href ="javascript:void(0)"><span onclick="page('+pageNumber+')">['+pageNumber+']</span></a>';
+				}
+			}
+			
+			if((data.pageIndex-1)>=1){
+				html +='<a href='+ "javascript:void(0)"+'>'+'<span onclick="page('+(data.pageIndex-1)+')">上一页</span></a>';
+			}
+			
+			if(data.pageIndex <=data.pageCount-1){
+				html +='<a href='+ "javascript:void(0)"+'>'+'<span onclick="page('+data.pageCount+')">尾页</span></a>';
+			}
+			
+		 	
+			html += '</p>';
+			html += '</td></tr>';
+			html += '</table>';
+			$('#userInfo').append(html); 
+	 	},
+	 	error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	});
+}
+page(1);
+
+function addUser(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+
+function deleteById(id){
+	$.ajax({
+		type:"post",
+		url:projectName+"/user/deleteById",
+		dataType:"json",
+	 	contentType:"application/x-www-form-urlencoded;charset=utf-8",
+	 	data:{
+			id:id
+		},
+		success:function(data){
+			window.parent.window.Toast(data);
+			move('user_list.html');
+		},
+		 error:function(){
+			alert("服务器连接失败！请刷新页面");
+		} 
+	});
+}
+
+function findById(id){
+	
+	var url = 'user_update.html?id='+id;
+	var title = '用户菜单';
+	layer_show(title,url,450,350);
+}
+</script>
+</head>
+<body>
+<!-- <p><input type="button" value="添加" onclick="addUser()"/></p>
+<div id="userInfo"></div> -->
+
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span><span id="menuLevel1">系统配置</span> <span class="c-gray en">&gt;</span> <span id="menuLevel2">用户管理</span><a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="page(1);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	
+	
+	<div class="Hui-article">
+	
+		<article class="cl pd-20">
+		
+		<div class="text-c">
+		<input type="text" name="" id="" placeholder="用户名、id" style="width:250px" class="input-text">
+		<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+	</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+		 	 	<span class="l"><a href="javascript:;" onclick="addUser('添加用户','user_add.html','450','570')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加用户</a></span>
+		 	  	<div id="pageCount"></div>
+		 	</div>
+			<div id="userInfo" ></div>
+			</article>
+		</div>
+</section>
+
+</body>
+</html>
