@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>文件读取</title>
+<script type="text/javascript" src="../../plugin/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../plugin/js/ajaxfileupload.js"></script>
+
+<script type="text/javascript">
+var projectName = window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf('/') + 1);
+	function file_import(){
+		$.ajaxFileUpload({
+		    url : projectName+"/file/import",
+		    contentType:"charset=utf-8",
+		    secureuri : false,
+		    fileElementId:"file_id",  //上传文件对应id 后台接收对应name
+		    dataType: 'text',
+		    data:{
+		    },
+		    success: function (data) {
+		    	alert(data)
+		    },
+		    error: function (data, status, e) {
+		    	alert("服务器连接失败，请联系管理员");
+		    }
+		});
+	}
+	
+	
+	function file_upload(){
+		$.ajaxFileUpload({
+		    url : projectName+"/file/upload",
+		    contentType:"charset=utf-8",
+		    secureuri : false,
+		    fileElementId:"fileids",  //上传文件对应id 后台接收对应name
+		    dataType: 'text',
+		    data:{
+		    },
+		    success: function (data) {
+		    	alert(data)
+		    },
+		    error: function (data, status, e) {
+		    	alert("服务器连接失败，请联系管理员");
+		    }
+		});
+	}
+</script>
+</head>
+<body>
+<div>
+<p>Excel表格导入</p>
+<p><a href="/file/file.xlsx" download="模板下载.xlsx" >模板下载</a></p>
+文件导入：<input type="file" id="file_id" name="file_name" />
+<button onclick="file_import()">导入</button>
+</div>
+<p>文件上传</p>
+文件上传：<input type="file" id="fileids" name="filenames" />
+<button onclick="file_upload()">上传</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.test_dao.FilesMapper">
+	<insert id="addFile" useGeneratedKeys="true" parameterType="com.source.test_model.Files" keyProperty="id">
+		insert into test_file(name,path) values(#{name},#{path})
+	</insert>
+
+</mapper>

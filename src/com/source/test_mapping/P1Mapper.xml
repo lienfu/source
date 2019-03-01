@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.source.test_dao.P1Mapper">
+
+     <insert id ="batchAdd" parameterType="java.util.List" >
+           
+           insert into test_p1(name)
+           values
+            <foreach collection ="list" item="p1" index= "index" separator =",">
+                (
+                #{p1.name}
+                )
+            </foreach >
+     </insert >
+
+
+</mapper>
